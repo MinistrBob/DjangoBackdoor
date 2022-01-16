@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AdminSite</title>
+</head>
+<body>
+{% if ssh_list %}
+    <table cellspacing="2" border="1" cellpadding="5">
+        <caption>SSH connections</caption>
+        <tr>
+            <th>IP</th>
+            <th>Hostname</th>
+            <th>Username</th>
+            <th>Description</th>
+        </tr>
+    {% for ssh in ssh_list %}
+        <tr>
+            <td><a href="{% url 'ssh_connect' ssh.id %}">{{ ssh.ip }}</a></td>
+            <td>{{ ssh.hostname }}</td>
+            <td>{{ ssh.username }}</td>
+            <td>{{ ssh.description }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+{% else %}
+    <p>No SSH connection configured.</p>
+{% endif %}
+</body>
+</html>

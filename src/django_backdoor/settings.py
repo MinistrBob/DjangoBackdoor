@@ -20,10 +20,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = os.environ['DBD_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ['DEBUG_VALUE'] == 'TRUE'
+DEBUG = os.environ['DBD_DEBUG_VALUE'] == 'TRUE'
 
 ALLOWED_HOSTS = []
 
@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'ssh_client',
+    'ssh_client.apps.SshClientConfig',
 ]
 
 MIDDLEWARE = [
@@ -73,11 +73,16 @@ WSGI_APPLICATION = 'django_backdoor.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
+ENVIRONMENT = os.environ['DBD_ENVIRONMENT']
+match ENVIRONMENT:
+    case 'PROD':
+        DATABASES_NAME = BASE_DIR / 'prod.sqlite3'
+    case 'DEV':
+        DATABASES_NAME = BASE_DIR / 'dev.sqlite3'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': DATABASES_NAME,
     }
 }
 
