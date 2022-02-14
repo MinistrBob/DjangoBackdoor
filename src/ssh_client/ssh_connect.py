@@ -22,7 +22,7 @@ class SshConnect:
         return f"{self.address}({self.hostname})"
 
     def connect_ssh(self):
-        """Create instance SSHClient for this mikrotik"""
+        """Create instance SSHClient"""
         print(f"Connect to server {self.address}")
         # print(f"user={self.username} | password={self.password}")
         if self.ssh is None:
@@ -41,7 +41,7 @@ class SshConnect:
                 raise Exception(f"ERROR: Can't connect to SSH:\n{e}")
 
     def download_file(self, source, destination):
-        """Download file from mikrotik"""
+        """Download file"""
         print(f"Download file {source} to {destination}")
         try:
             ftp_client = self.ssh.open_sftp()

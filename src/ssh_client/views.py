@@ -7,10 +7,31 @@ from django.http import Http404
 
 from .models import Ssh
 
-
 # Create your views here.
 # def index(request):
 #     return HttpResponse(f"Hello, you are here: {settings.BASE_DIR}")
+
+ssh_list = {}
+
+
+def get_ssh_connect(ssh):
+    """
+    If SSH connection already exists return it, otherwise create a new SSH connection
+    :param ssh: SSH connection parameters
+    :return: SshConnect instance 
+    """
+    sc = None
+    err = None
+    if ssh.ip in ssh_list:
+        sc = ssh_list[ssh.ip]
+    else:
+        try:
+            sc = SshConnect(ssh.ip, ssh.username, ssh.password)
+            ssh_list[ssh.ip] = sc
+        except Exception as e:
+            err = e
+    return sc, err
+
 
 def index(request):
     print(request.session)
@@ -25,9 +46,12 @@ def ssh_connect(request, ssh_id):
         ssh = Ssh.objects.get(pk=ssh_id)
     except Ssh.DoesNotExist:
         raise Http404("SSH does not exist")
+    sc, err = get_ssh_connect(ssh)
+    print(sc, err)
     try:
-        sc = SshConnect(ssh.ip, ssh.username, ssh.password)
+        if err is not None:
+            raise Exception(err)
         result = sc.execute_command('ls')
-    except Exception as err:
-        return render(request, 'ssh_client/error.html', {'err': err})
+    except Exception as e:
+        return render(request, 'ssh_client/error.html', {'ssh': ssh, 'err': err})
     return render(request, 'ssh_client/ssh_connect.html', {'ssh': ssh, 'result': result})
