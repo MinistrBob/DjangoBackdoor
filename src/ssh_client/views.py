@@ -46,12 +46,13 @@ def ssh_connect(request, ssh_id):
         ssh = Ssh.objects.get(pk=ssh_id)
     except Ssh.DoesNotExist:
         raise Http404("SSH does not exist")
-    sc, err = get_ssh_connect(ssh)
-    print(sc, err)
+
     try:
+        sc, err = get_ssh_connect(ssh)
+        print(sc, err)
         if err is not None:
             raise Exception(err)
-        result = sc.execute_command('ls')
+        result = 'connected'
     except Exception as e:
-        return render(request, 'ssh_client/error.html', {'ssh': ssh, 'err': err})
-    return render(request, 'ssh_client/ssh_connect.html', {'ssh': ssh, 'result': result})
+        return render(request, 'ssh_client/ssh_error.html', {'ssh': ssh, 'err': err})
+    return render(request, 'ssh_client/ssh.html', {'ssh': ssh, 'result': result})
