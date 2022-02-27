@@ -1,6 +1,10 @@
 import paramiko
 
 
+def xstr(line):
+    return line if line else None
+
+
 class SshConnect:
 
     def __init__(self, address, username, password):
@@ -56,9 +60,10 @@ class SshConnect:
         print(f'Execute command "{command}"')
         try:
             stdin, stdout, stderr = self.ssh.exec_command(command + "\n")
-            output = stdout.read()
-            output = output.decode('UTF-8')
-            print(f"  Command executed:\n-->\n{output}\n-->")
-            return output
+            output = xstr(stdout.read().decode('UTF-8'))
+            error = xstr(stderr.read().decode('UTF-8'))
+            result = f'Command executed: "{command}"'
+            print(f"{result}\n-->\n{output}\n-->")
+            return output, error, result
         except Exception as e:
             raise Exception(f"ERROR: Can't execute command:\n{e}")

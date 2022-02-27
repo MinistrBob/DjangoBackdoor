@@ -6,9 +6,23 @@
 </head>
 <body>
     {{ ssh.ip }}
-    <p>---------------------------------</p>
-    <pre>{{ result }}</pre>
-    <p>---------------------------------</p>
+    <form action="/{{ ssh_id }}/" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Execute">
+    </form>
+    <p>{{ result }}</p>
+    {% if error is not None %}
+        <p>Error:</p>
+        <p>---------------------------------</p>
+        <pre>{{ error }}</pre>
+        <p>---------------------------------</p>
+    {% endif %}
+    {% if output is not None %}
+        <p>---------------------------------</p>
+        <pre>{{ output }}</pre>
+        <p>---------------------------------</p>
+    {% endif %}
 <!-- more options to display text with newlines
     {{result|linebreaks}}
     {{result|linebreaksbr}}

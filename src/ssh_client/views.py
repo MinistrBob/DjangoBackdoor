@@ -1,11 +1,12 @@
 from ssh_client.ssh_connect import SshConnect
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
 from django.template import loader
 from django.http import Http404
 
 from .models import Ssh
+from .forms import CommandForm
 
 # Create your views here.
 # def index(request):
@@ -52,7 +53,25 @@ def ssh_connect(request, ssh_id):
         print(sc, err)
         if err is not None:
             raise Exception(err)
-        result = 'connected'
     except Exception as e:
         return render(request, 'ssh_client/ssh_error.html', {'ssh': ssh, 'err': err})
-    return render(request, 'ssh_client/ssh.html', {'ssh': ssh, 'result': result})
+
+    output = error = result = None
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = CommandForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # redirect to a new URL:
+            output, error, result = sc.execute_command(form.cleaned_data['command'])
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        output = 'connected'
+        error = result = None
+        form = CommandForm()
+
+    return render(request, 'ssh_client/ssh.html',
+                  {'ssh_id': ssh_id, 'ssh': ssh, 'form': form, 'output': output, 'error': error, 'result': result})
+
