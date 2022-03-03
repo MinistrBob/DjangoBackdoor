@@ -7,6 +7,7 @@ class Ssh(models.Model):
     hostname = models.CharField("Hostname", max_length=32, default='')
     username = models.CharField("Username", max_length=32, default='')
     password = models.CharField("Password", max_length=32, default='')
+    download_path = models.CharField("Download Folder", max_length=1024, default='')
     description = models.CharField("Description", max_length=250, default='')
 
     def __str__(self):

@@ -5,11 +5,13 @@
     <title>Connect</title>
 </head>
 <body>
-    {{ ssh.ip }}
+    <h3>{{ ssh.ip }}</h3>
+    <hr>
+    <p>Temp folder: {{ temp_folder }}</p>
     <form action="/{{ ssh_id }}/" method="post">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Execute">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Execute">
     </form>
     <p>{{ result }}</p>
     {% if error is not None %}

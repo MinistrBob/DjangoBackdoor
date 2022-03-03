@@ -5,6 +5,7 @@ from django.conf import settings
 from django.template import loader
 from django.http import Http404
 
+import tempfile
 from .models import Ssh
 from .forms import CommandForm
 
@@ -13,6 +14,7 @@ from .forms import CommandForm
 #     return HttpResponse(f"Hello, you are here: {settings.BASE_DIR}")
 
 ssh_list = {}
+TEMP_FOLDER = tempfile.gettempdir()
 
 
 def get_ssh_connect(ssh):
@@ -73,5 +75,11 @@ def ssh_connect(request, ssh_id):
         form = CommandForm()
 
     return render(request, 'ssh_client/ssh.html',
-                  {'ssh_id': ssh_id, 'ssh': ssh, 'form': form, 'output': output, 'error': error, 'result': result})
+                  {'ssh_id': ssh_id,
+                   'ssh': ssh,
+                   'form': form,
+                   'output': output,
+                   'error': error,
+                   'result': result,
+                   'temp_folder': TEMP_FOLDER})
 
