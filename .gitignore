@@ -224,3 +224,5 @@ dmypy.json
 # My list
 test.py
 config.conf
+src/dev.sqlite3
+src/prod.sqlite3
